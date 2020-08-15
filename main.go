@@ -213,11 +213,6 @@ func main() {
 
 	var fnParams = strings.Split(fnParamsStr[5:len(fnParamsStr)-2], "],[")
 
-	for i, fnParam := range fnParams {
-		fmt.Println(fnNames[i], " ", fnParam)
-	}
-	log.Fatal("hello")
-
 	for i, fnName := range fnNames {
 		switch fnName {
 		case "get":
