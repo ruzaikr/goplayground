@@ -73,6 +73,38 @@ func (this *MyLinkedList) AddAtTail(val int)  {
 	this.length++
 }
 
+func (this *MyLinkedList) Reset() {
+	this.head = nil
+	this.tail = nil
+	this.length = 0
+}
+
+func (this *MyLinkedList) DeleteHead() {
+	if this.length < 1 {
+		return
+	}
+
+	if this.length == 1 {
+		this.Reset()
+		return
+	}
+
+	this.head = this.head.next
+	this.length--
+}
+
+//func (this *MyLinkedList) DeleteTail() {
+//	if this.length < 1 {
+//		return
+//	}
+//
+//	if this.length == 1 {
+//		this.Reset()
+//	}
+//
+//	this.tail
+//}
+
 
 /** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
 func (this *MyLinkedList) AddAtIndex(index int, val int)  {
@@ -85,18 +117,15 @@ func (this *MyLinkedList) AddAtIndex(index int, val int)  {
 	} else if index == this.length {
 		this.AddAtTail(val)
 		return
+	} else if index == 0 {
+		this.AddAtHead(val)
 	}
 
-	var current = this.head
-	var prev *linkedListNode
-	prev = nil
-	var i = 0
+	var prev = this.head
+	var current = this.head.next
+	var i = 1
 	for current != nil {
 		if index == i {
-			if i == 0 {
-				this.AddAtHead(val)
-				return
-			}
 			var n = linkedListNode{
 				value: val,
 				next:  current,
@@ -118,10 +147,14 @@ func (this *MyLinkedList) DeleteAtIndex(index int)  {
 		return
 	}
 
-	var current = this.head
-	var prev *linkedListNode
-	prev = nil
-	var i = 0
+	if index == 0 {
+		this.DeleteHead()
+		return
+	}
+
+	var prev = this.head
+	var current = this.head.next
+	var i = 1
 	for current != nil {
 		if index == i {
 			prev.next = current.next
@@ -134,15 +167,20 @@ func (this *MyLinkedList) DeleteAtIndex(index int)  {
 }
 
 func (this *MyLinkedList) ToString()  {
-	if this.length == 0 {
-		return
-	}
-	var current = this.head
 	fmt.Println("====BEGINNING====")
-	for current != nil {
-		fmt.Println("[", current.value ,"]")
-		current = current.next
+
+	if this.length == 0 {
+		fmt.Println("[]")
+	}else {
+		var current = this.head
+
+		var i = 0
+		for current != nil {
+			fmt.Println(i, ": [", current.value ,"]")
+			current = current.next
+		}
 	}
+
 	fmt.Println("=======END=======\n")
 }
 
@@ -164,16 +202,27 @@ func main() {
 	ll.AddAtHead(1)
 	ll.ToString()
 
-	ll.AddAtTail(3)
+	ll.DeleteAtIndex(0)
 	ll.ToString()
-
-	ll.AddAtIndex(1, 2)
-	ll.ToString()
-
-	fmt.Println("Get(1): ", ll.Get(1))
-
-	ll.DeleteAtIndex(1)
-	ll.ToString()
-
-	fmt.Println("Get(1): ", ll.Get(1))
 }
+
+//func main() {
+//	fmt.Println("Hello, Linked List!")
+//	var ll = Constructor();
+//
+//	ll.AddAtHead(1)
+//	ll.ToString()
+//
+//	ll.AddAtTail(3)
+//	ll.ToString()
+//
+//	ll.AddAtIndex(1, 2)
+//	ll.ToString()
+//
+//	fmt.Println("Get(1): ", ll.Get(1))
+//
+//	ll.DeleteAtIndex(1)
+//	ll.ToString()
+//
+//	fmt.Println("Get(1): ", ll.Get(1))
+//}
