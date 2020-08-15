@@ -30,11 +30,11 @@ func Constructor() MyLinkedList {
 }
 
 /** Get the value of the index-th node in the linked list. If the index is invalid, return -1. */
-func (this *MyLinkedList) Get(index int) int {
+func (mll *MyLinkedList) Get(index int) int {
 	if index < 0 || index > 1000 {
 		return -1
 	}
-	var current = this.head
+	var current = mll.head
 	var i = 0
 	for current != nil {
 		if index == i {
@@ -47,75 +47,76 @@ func (this *MyLinkedList) Get(index int) int {
 }
 
 /** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
-func (this *MyLinkedList) AddAtHead(val int)  {
+func (mll *MyLinkedList) AddAtHead(val int)  {
 	var n = linkedListNode{
 		value: val,
-		next:  this.head,
+		next:  mll.head,
 	}
-	this.head = &n
+	mll.head = &n
 
-	if this.tail == nil {
-		this.tail = &n
+	if mll.tail == nil {
+		mll.tail = &n
 	}
 
-	this.length++
+	mll.length++
 }
 
 /** Append a node of value val to the last element of the linked list. */
-func (this *MyLinkedList) AddAtTail(val int)  {
+func (mll *MyLinkedList) AddAtTail(val int)  {
 	var n = linkedListNode{
 		value: val,
 		next:  nil,
 	}
-	if this.tail != nil {
-		this.tail.next = &n
-	}
-	this.tail = &n
 
-	if this.head == nil {
-		this.head = &n
+	if mll.tail != nil {
+		mll.tail.next = &n
+	}
+	mll.tail = &n
+
+	if mll.head == nil {
+		mll.head = &n
 	}
 
-	this.length++
+	mll.length++
 }
 
-func (this *MyLinkedList) Reset() {
-	this.head = nil
-	this.tail = nil
-	this.length = 0
+func (mll *MyLinkedList) Reset() {
+	mll.head = nil
+	mll.tail = nil
+	mll.length = 0
 }
 
-func (this *MyLinkedList) DeleteHead() {
-	if this.length < 1 {
+func (mll *MyLinkedList) DeleteHead() {
+	if mll.length < 1 {
 		return
 	}
 
-	if this.length == 1 {
-		this.Reset()
+	if mll.length == 1 {
+		mll.Reset()
 		return
 	}
 
-	this.head = this.head.next
-	this.length--
+	mll.head = mll.head.next
+	mll.length--
 }
 
 /** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
-func (this *MyLinkedList) AddAtIndex(index int, val int)  {
+func (mll *MyLinkedList) AddAtIndex(index int, val int)  {
 	if index < 0 || index > 1000 {
 		return
 	}
 
-	if index > this.length {
+	if index > mll.length {
 		return
-	} else if index == this.length {
-		this.AddAtTail(val)
+	} else if index == mll.length {
+		mll.AddAtTail(val)
 		return
 	} else if index == 0 {
-		this.AddAtHead(val)
+		mll.AddAtHead(val)
 	}
 
-	var prev = this.head
-	var current = this.head.next
+	var prev = mll.head
+	var current = mll.head.next
 	var i = 1
 	for current != nil {
 		if index == i {
@@ -124,7 +125,7 @@ func (this *MyLinkedList) AddAtIndex(index int, val int)  {
 				next:  current,
 			}
 			prev.next = &n
-			this.length++
+			mll.length++
 			return
 		}
 		prev = current
@@ -135,22 +136,26 @@ func (this *MyLinkedList) AddAtIndex(index int, val int)  {
 
 
 /** Delete the index-th node in the linked list, if the index is valid. */
-func (this *MyLinkedList) DeleteAtIndex(index int)  {
-	if index < 0 || index > 1000 || index >= this.length {
+func (mll *MyLinkedList) DeleteAtIndex(index int)  {
+	if index < 0 || index > 1000 || index >= mll.length {
 		return
 	}
 
 	if index == 0 {
-		this.DeleteHead()
+		mll.DeleteHead()
 		return
 	}
 
-	var prev = this.head
-	var current = this.head.next
+	var prev = mll.head
+	var current = mll.head.next
 	var i = 1
 	for current != nil {
 		if index == i {
 			prev.next = current.next
+			mll.length--
+			if current.next == nil {
+				mll.tail = prev
+			}
 			return
 		}
 		prev = current
@@ -159,13 +164,13 @@ func (this *MyLinkedList) DeleteAtIndex(index int)  {
 	}
 }
 
-func (this *MyLinkedList) ToString()  {
+func (mll *MyLinkedList) ToString()  {
 	//fmt.Println("====BEGINNING====")
 
-	if this.length == 0 {
+	if mll.length == 0 {
 		fmt.Println("[]")
 	}else {
-		var current = this.head
+		var current = mll.head
 
 		var i = 0
 		for current != nil {
@@ -174,7 +179,6 @@ func (this *MyLinkedList) ToString()  {
 			i++
 		}
 	}
-
 	fmt.Println("\n")
 }
 
