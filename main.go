@@ -1,7 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"log"
+	"os"
+	"strconv"
+	"strings"
 )
 
 type linkedListNode struct {
@@ -15,7 +20,6 @@ type MyLinkedList struct {
 	length int
 }
 
-
 /** Initialize your data structure here. */
 func Constructor() MyLinkedList {
 	return MyLinkedList{
@@ -24,7 +28,6 @@ func Constructor() MyLinkedList {
 		length: 0,
 	}
 }
-
 
 /** Get the value of the index-th node in the linked list. If the index is invalid, return -1. */
 func (this *MyLinkedList) Get(index int) int {
@@ -43,7 +46,6 @@ func (this *MyLinkedList) Get(index int) int {
 	return -1
 }
 
-
 /** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
 func (this *MyLinkedList) AddAtHead(val int)  {
 	var n = linkedListNode{
@@ -59,7 +61,6 @@ func (this *MyLinkedList) AddAtHead(val int)  {
 	this.length++
 }
 
-
 /** Append a node of value val to the last element of the linked list. */
 func (this *MyLinkedList) AddAtTail(val int)  {
 	var n = linkedListNode{
@@ -70,6 +71,11 @@ func (this *MyLinkedList) AddAtTail(val int)  {
 		this.tail.next = &n
 	}
 	this.tail = &n
+
+	if this.head == nil {
+		this.head = &n
+	}
+
 	this.length++
 }
 
@@ -92,19 +98,6 @@ func (this *MyLinkedList) DeleteHead() {
 	this.head = this.head.next
 	this.length--
 }
-
-//func (this *MyLinkedList) DeleteTail() {
-//	if this.length < 1 {
-//		return
-//	}
-//
-//	if this.length == 1 {
-//		this.Reset()
-//	}
-//
-//	this.tail
-//}
-
 
 /** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
 func (this *MyLinkedList) AddAtIndex(index int, val int)  {
@@ -143,7 +136,7 @@ func (this *MyLinkedList) AddAtIndex(index int, val int)  {
 
 /** Delete the index-th node in the linked list, if the index is valid. */
 func (this *MyLinkedList) DeleteAtIndex(index int)  {
-	if index < 0 || index > 1000 {
+	if index < 0 || index > 1000 || index >= this.length {
 		return
 	}
 
@@ -167,7 +160,7 @@ func (this *MyLinkedList) DeleteAtIndex(index int)  {
 }
 
 func (this *MyLinkedList) ToString()  {
-	fmt.Println("====BEGINNING====")
+	//fmt.Println("====BEGINNING====")
 
 	if this.length == 0 {
 		fmt.Println("[]")
@@ -176,12 +169,13 @@ func (this *MyLinkedList) ToString()  {
 
 		var i = 0
 		for current != nil {
-			fmt.Println(i, ": [", current.value ,"]")
+			fmt.Print(i, ":[", current.value ,"]-->")
 			current = current.next
+			i++
 		}
 	}
 
-	fmt.Println("=======END=======\n")
+	fmt.Println("\n")
 }
 
 
@@ -196,33 +190,79 @@ func (this *MyLinkedList) ToString()  {
  */
 
 func main() {
-	fmt.Println("Hello, Linked List!")
-	var ll = Constructor();
+	var ll = Constructor()
 
-	ll.AddAtHead(1)
-	ll.ToString()
+	inputFile, err := os.Open("input")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer inputFile.Close()
 
-	ll.DeleteAtIndex(0)
-	ll.ToString()
+	var scanner = bufio.NewScanner(inputFile)
+	scanner.Scan()
+	var fnNamesStr = scanner.Text()
+	scanner.Scan()
+	var fnParamsStr = scanner.Text()
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	var fnNamesStrNoQuotes = strings.Replace(fnNamesStr[16:len(fnNamesStr)-1], "\"", "", -1)
+	var fnNames = strings.Split(fnNamesStrNoQuotes, ",")
+
+	var fnParams = strings.Split(fnParamsStr[5:len(fnParamsStr)-2], "],[")
+
+	for i, fnParam := range fnParams {
+		fmt.Println(fnNames[i], " ", fnParam)
+	}
+	log.Fatal("hello")
+
+	for i, fnName := range fnNames {
+		switch fnName {
+		case "get":
+			var fnParamInt, err = strconv.Atoi(fnParams[i])
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println("Get", fnParamInt, ": ", ll.Get(fnParamInt), "\n")
+		case "addAtHead":
+			var fnParamInt, err = strconv.Atoi(fnParams[i])
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println("addAtHead(",fnParamInt,")")
+			ll.AddAtHead(fnParamInt)
+			ll.ToString()
+		case "addAtTail":
+			var fnParamInt, err = strconv.Atoi(fnParams[i])
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println("addAtTail(",fnParamInt,")")
+			ll.AddAtTail(fnParamInt)
+			ll.ToString()
+		case "addAtIndex":
+			var indexAndVal = strings.Split(fnParams[i], ",")
+			var index, err = strconv.Atoi(indexAndVal[0])
+			if err != nil {
+				log.Fatal(err)
+			}
+			var val, err1 = strconv.Atoi(indexAndVal[1])
+			if err1 != nil {
+				log.Fatal(err1)
+			}
+			fmt.Println("addAtIndex(",index,",",val,")")
+			ll.AddAtIndex(index, val)
+			ll.ToString()
+		case "deleteAtIndex":
+			var fnParamInt, err = strconv.Atoi(fnParams[i])
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println("deleteAtIndex(",fnParamInt,")")
+			ll.DeleteAtIndex(fnParamInt)
+			ll.ToString()
+		}
+	}
 }
-
-//func main() {
-//	fmt.Println("Hello, Linked List!")
-//	var ll = Constructor();
-//
-//	ll.AddAtHead(1)
-//	ll.ToString()
-//
-//	ll.AddAtTail(3)
-//	ll.ToString()
-//
-//	ll.AddAtIndex(1, 2)
-//	ll.ToString()
-//
-//	fmt.Println("Get(1): ", ll.Get(1))
-//
-//	ll.DeleteAtIndex(1)
-//	ll.ToString()
-//
-//	fmt.Println("Get(1): ", ll.Get(1))
-//}
