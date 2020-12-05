@@ -165,8 +165,6 @@ func (mll *MyLinkedList) DeleteAtIndex(index int)  {
 }
 
 func (mll *MyLinkedList) ToString()  {
-	//fmt.Println("====BEGINNING====")
-
 	if mll.length == 0 {
 		fmt.Println("[]")
 	}else {
