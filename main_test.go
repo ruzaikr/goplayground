@@ -23,6 +23,16 @@ var mergeTests = []struct {
 		[][]int{{1,4},{0,4}},
 		[][]int{{0,4}},
 	},
+	{
+		"Case 4", // Probably requires sorting
+		[][]int{{1,4},{0,1}},
+		[][]int{{0,4}},
+	},
+	{
+		"Case 5", // Probably requires sorting
+		[][]int{{1,4},{2,3}},
+		[][]int{{1,4}},
+	},
 }
 
 func areIntervalsEqual(a [][]int, b [][]int) bool {
