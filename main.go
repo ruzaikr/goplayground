@@ -20,5 +20,7 @@ func merge(intervals [][]int) [][]int {
 
 func main() {
 	var myIntervals = [][]int{{1,3},{2,6},{8,10},{15,18}}
+	var myIntervals2 = [][]int{{1,4},{4,5}}
 	log.Println(merge(myIntervals))
+	log.Println(merge(myIntervals2))
 }
