@@ -38,6 +38,11 @@ var mergeTests = []struct {
 		[][]int{{1,4},{0,2},{3,5}},
 		[][]int{{0,5}},
 	},
+	{
+		"Case 7",
+		[][]int{{2,3},{4,5},{6,7},{8,9},{1,10}},
+		[][]int{{1,10}},
+	},
 }
 
 func areIntervalsEqual(a [][]int, b [][]int) bool {

@@ -37,6 +37,7 @@ func Merge(intervals [][]int) [][]int {
 			intervals = removeFromIntervals(i, intervals)
 		}else if isAContainedWithinB(intervals[i+1], intervals[i]) {
 			intervals = removeFromIntervals(i+1, intervals)
+			i--
 		} else if intervals[i][1] >= intervals[i+1][0] {
 			intervals[i+1][0] = intervals[i][0]
 			intervals = removeFromIntervals(i, intervals)
