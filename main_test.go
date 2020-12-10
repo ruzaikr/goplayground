@@ -4,27 +4,23 @@ import (
 	"testing"
 )
 
-var twoSumTests = []struct {
+var testCases = []struct {
 	name string
-	inputArray  []int
-	target int
-	expectedOutput []int
+	usernames  []string
+	timestamps []int
+	websites []string
+	expectedOutputs []string
 }{
 	{
 	"Case 1",
-	[]int{2, 7, 11, 15},
-		9,
-	[]int{0, 1},
-	},
-	{
-	"Case 2",
-	[]int{3, 2, 4},
-		6,
-	[]int{1, 2},
+	[]string{"joe","joe","joe","james","james","james","james","mary","mary","mary"},
+		[]int{1,2,3,4,5,6,7,8,9,10},
+	[]string{"home","about","career","home","cart","maps","home","home","about","career"},
+	[]string{"home","about","career"},
 	},
 }
 
-func areIntArraysEqual(a []int, b []int) bool {
+func areStringArraysEqual(a []string, b []string) bool {
 	for i := 0; i < len(a); i++ {
 		if a[i] != b[i] {
 			return false
@@ -33,13 +29,12 @@ func areIntArraysEqual(a []int, b []int) bool {
 	return true
 }
 
-
-func TestTwoSum(t *testing.T) {
-	for _, twoSumTest := range twoSumTests {
-		t.Run(twoSumTest.name, func(t *testing.T) {
-			var actualOutput = twoSum(twoSumTest.inputArray, twoSumTest.target)
-			if !areIntArraysEqual(actualOutput, twoSumTest.expectedOutput) {
-				t.Errorf("got %v, want %v", actualOutput, twoSumTest.expectedOutput)
+func TestMostVisitedPattern(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			var actualOutput = mostVisitedPattern(testCase.usernames, testCase.timestamps, testCase.websites)
+			if !areStringArraysEqual(actualOutput, testCase.expectedOutputs) {
+				t.Errorf("got %v, want %v", actualOutput, testCase.expectedOutputs)
 			}
 		})
 	}
