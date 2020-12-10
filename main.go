@@ -40,6 +40,7 @@ func Merge(intervals [][]int) [][]int {
 		} else if intervals[i][1] >= intervals[i+1][0] {
 			intervals[i+1][0] = intervals[i][0]
 			intervals = removeFromIntervals(i, intervals)
+			i--
 		}
 	}
 	return intervals

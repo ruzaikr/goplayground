@@ -24,14 +24,19 @@ var mergeTests = []struct {
 		[][]int{{0,4}},
 	},
 	{
-		"Case 4", // Probably requires sorting
+		"Case 4", // required sorting
 		[][]int{{1,4},{0,1}},
 		[][]int{{0,4}},
 	},
 	{
-		"Case 5", // Probably requires sorting
+		"Case 5",
 		[][]int{{1,4},{2,3}},
 		[][]int{{1,4}},
+	},
+	{
+		"Case 6",
+		[][]int{{1,4},{0,2},{3,5}},
+		[][]int{{0,5}},
 	},
 }
 
