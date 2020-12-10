@@ -9,14 +9,20 @@ func twoSum(nums []int, target int) []int {
 		log.Fatalln("Length of input array must be larger than or equal to 2")
 	}
 
-	for i := 0; i < len(nums) - 1; i++ {
-		for j := i + 1; j < len(nums); j++ {
-			var sum = nums[i] + nums[j]
-			if sum == target {
-				return []int{i, j}
-			}
+	var m = make(map[int]int) // key: complement, val: index
+
+	for i := 0; i < len(nums); i++ {
+		m[nums[i]] = i
+	}
+
+	for i := 0; i < len(nums); i++ {
+		var c = target - nums[i]
+		var v, exists = m[c]
+		if exists && v != i {
+			return []int{i,v}
 		}
 	}
+
 	return []int{}
 }
 

@@ -16,6 +16,12 @@ var twoSumTests = []struct {
 		9,
 	[]int{0, 1},
 	},
+	{
+	"Case 2",
+	[]int{3, 2, 4},
+		6,
+	[]int{1, 2},
+	},
 }
 
 func areIntArraysEqual(a []int, b []int) bool {
