@@ -32,14 +32,8 @@ func mostVisitedPattern(username []string, timestamp []int, website []string) []
 
 	// make all possible 3-sequences
 	for i := 0; i < len(websites); i++ {
-		for j := i + 1; j < len(websites); j++ {
-			if websites[j] == websites[i] {
-				continue
-			}
-			for k := j + 1; k < len(websites); k++ {
-				if websites[k] == websites[j] {
-					continue
-				}
+		for j := 0; j < len(websites); j++ {
+			for k := 0; k < len(websites); k++ {
 				var seq = fmt.Sprintf("%s,%s,%s",websites[i],websites[j],websites[k])
 				threeSeqs[seq] = 0
 			}
@@ -64,21 +58,23 @@ func mostVisitedPattern(username []string, timestamp []int, website []string) []
 	var highestCount = 0
 	var mostVisitedPattenSlice = make([]string, 3)
 	for _, websites := range usernameToVisits {
+		var threeSeqsUser = make(map[string]bool)
 		for i := 0; i < len(websites); i++ {
 			for j := i + 1; j < len(websites); j++ {
-				if websites[j] == websites[i] {
-					continue
-				}
 				for k := j + 1; k < len(websites); k++ {
-					if websites[k] == websites[j] {
+					var seq = fmt.Sprintf("%s,%s,%s",websites[i],websites[j],websites[k])
+					if _, exists := threeSeqsUser[seq]; !exists {
+						threeSeqsUser[seq] = true
+					}else {
 						continue
 					}
-					var seq = fmt.Sprintf("%s,%s,%s",websites[i],websites[j],websites[k])
 					var count, _ = threeSeqs[seq]
 					var newCount = count + 1
 					threeSeqs[seq] = newCount
 					if newCount > highestCount {
 						highestCount = newCount
+						mostVisitedPattenSlice = []string{websites[i], websites[j], websites[k]}
+					}else if newCount == highestCount && seq < fmt.Sprintf("%s,%s,%s",mostVisitedPattenSlice[0],mostVisitedPattenSlice[1],mostVisitedPattenSlice[2]) {
 						mostVisitedPattenSlice = []string{websites[i], websites[j], websites[k]}
 					}
 				}
