@@ -5,11 +5,11 @@ import (
 )
 
 var testCases = []struct {
-	name string
-	usernames  []string
-	timestamps []int
-	websites []string
-	expectedOutputs []string
+	name           string
+	usernames      []string
+	timestamps     []int
+	websites       []string
+	expectedOutput []string
 }{
 	{
 	"Case 1",
@@ -21,6 +21,9 @@ var testCases = []struct {
 }
 
 func areStringArraysEqual(a []string, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
 	for i := 0; i < len(a); i++ {
 		if a[i] != b[i] {
 			return false
@@ -33,8 +36,8 @@ func TestMostVisitedPattern(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			var actualOutput = mostVisitedPattern(testCase.usernames, testCase.timestamps, testCase.websites)
-			if !areStringArraysEqual(actualOutput, testCase.expectedOutputs) {
-				t.Errorf("got %v, want %v", actualOutput, testCase.expectedOutputs)
+			if !areStringArraysEqual(actualOutput, testCase.expectedOutput) {
+				t.Errorf("got %v, want %v", actualOutput, testCase.expectedOutput)
 			}
 		})
 	}
