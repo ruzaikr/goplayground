@@ -28,8 +28,6 @@ func mostVisitedPattern(username []string, timestamp []int, website []string) []
 		}
 	}
 
-	var threeSeqs = make(map[string]int)
-
 	sort.Slice(visits, func(i, j int) bool {
 		return visits[i].timestamp < visits[j].timestamp
 	})
@@ -47,6 +45,7 @@ func mostVisitedPattern(username []string, timestamp []int, website []string) []
 
 	var highestCount = 0
 	var mostVisitedPattenSlice = make([]string, 3)
+	var threeSeqs = make(map[string]int)
 	for _, websites := range usernameToVisits {
 		var threeSeqsUser = make(map[string]bool)
 		for i := 0; i < len(websites); i++ {
