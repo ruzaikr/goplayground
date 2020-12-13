@@ -5,73 +5,56 @@ import (
 	"sort"
 )
 
-type visit struct {
-	timestamp int
-	username string
-	website string
-}
-
-func mostVisitedPattern(username []string, timestamp []int, website []string) []string {
-	var websitesMap = make(map[string]bool)
-	var websites = make([]string, 0)
-	var visits = make([]visit, len(timestamp))
-	for i := 0; i < len(timestamp); i++ {
-		visits[i] = visit{
-			username: username[i],
-			timestamp: timestamp[i],
-			website: website[i],
-		}
-
-		if _, exists := websitesMap[website[i]]; !exists {
-			websitesMap[website[i]] = true
-			websites = append(websites, website[i])
-		}
+func minMeetingRooms(intervals [][]int) int {
+	if len(intervals) < 1 {
+		return 0
+	} else if len(intervals) == 1 {
+		return 1
 	}
 
-	sort.Slice(visits, func(i, j int) bool {
-		return visits[i].timestamp < visits[j].timestamp
+	sort.Slice(intervals, func(i, j int) bool {
+		if intervals[i][0] < intervals[j][0] {
+			return true
+		} else if intervals[i][0] == intervals[j][0] {
+			return intervals[i][1] < intervals[j][1]
+		}
+		return false
 	})
 
-	var usernameToVisits = make(map[string][]string)
+	var intervalsAllocated = make(map[int]bool)
 
-	for i := 0; i < len(visits); i++ {
-		var v, exists = usernameToVisits[visits[i].username]
-		if exists {
-			usernameToVisits[visits[i].username] = append(v, visits[i].website)
-		}else {
-			usernameToVisits[visits[i].username] =  []string{visits[i].website}
+	var noOfMeetingRooms int
+
+	for i := 0; i < len(intervals); i++ {
+
+		var keysToAllocate []int
+		if intervalsAllocated[i] {
+			continue
 		}
-	}
-
-	var highestCount = 0
-	var mostVisitedPattenSlice = make([]string, 3)
-	var threeSeqs = make(map[string]int)
-	for _, websites := range usernameToVisits {
-		var threeSeqsUser = make(map[string]bool)
-		for i := 0; i < len(websites); i++ {
-			for j := i + 1; j < len(websites); j++ {
-				for k := j + 1; k < len(websites); k++ {
-					var seq = fmt.Sprintf("%s,%s,%s",websites[i],websites[j],websites[k])
-					if _, exists := threeSeqsUser[seq]; !exists {
-						threeSeqsUser[seq] = true
-					}else {
-						continue
-					}
-					var count, _ = threeSeqs[seq]
-					var newCount = count + 1
-					threeSeqs[seq] = newCount
-					if newCount > highestCount {
-						highestCount = newCount
-						mostVisitedPattenSlice = []string{websites[i], websites[j], websites[k]}
-					}else if newCount == highestCount && seq < fmt.Sprintf("%s,%s,%s",mostVisitedPattenSlice[0],mostVisitedPattenSlice[1],mostVisitedPattenSlice[2]) {
-						mostVisitedPattenSlice = []string{websites[i], websites[j], websites[k]}
-					}
-				}
+		keysToAllocate = append(keysToAllocate, i)
+		var allocatedJMap = make(map[string]bool)
+		for j := i + 1; j < len(intervals); j++ {
+			var keyJ = fmt.Sprintf("%d,%d", intervals[j][0], intervals[j][1])
+			if intervalsAllocated[j] || allocatedJMap[keyJ] {
+				continue
 			}
+
+			if intervals[i][1] <= intervals[j][0] {
+				keysToAllocate = append(keysToAllocate, j)
+				allocatedJMap[keyJ] = true
+			}
+
 		}
+
+		for i := 0; i < len(keysToAllocate); i++ {
+			intervalsAllocated[keysToAllocate[i]] = true
+		}
+
+		noOfMeetingRooms = noOfMeetingRooms + 1
+
 	}
 
-	return mostVisitedPattenSlice
+	return noOfMeetingRooms
 }
 
 func main() {
