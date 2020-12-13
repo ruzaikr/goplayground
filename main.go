@@ -30,16 +30,6 @@ func mostVisitedPattern(username []string, timestamp []int, website []string) []
 
 	var threeSeqs = make(map[string]int)
 
-	// make all possible 3-sequences
-	for i := 0; i < len(websites); i++ {
-		for j := 0; j < len(websites); j++ {
-			for k := 0; k < len(websites); k++ {
-				var seq = fmt.Sprintf("%s,%s,%s",websites[i],websites[j],websites[k])
-				threeSeqs[seq] = 0
-			}
-		}
-	}
-
 	sort.Slice(visits, func(i, j int) bool {
 		return visits[i].timestamp < visits[j].timestamp
 	})
