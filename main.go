@@ -31,17 +31,21 @@ func minMeetingRooms(intervals [][]int) int {
 		if intervalsAllocated[i] {
 			continue
 		}
+
 		keysToAllocate = append(keysToAllocate, i)
-		var allocatedJMap = make(map[string]bool)
-		for j := i + 1; j < len(intervals); j++ {
-			var keyJ = fmt.Sprintf("%d,%d", intervals[j][0], intervals[j][1])
-			if intervalsAllocated[j] || allocatedJMap[keyJ] {
+
+		var a = i
+		var allocatedBMap = make(map[string]bool)
+		for b := a + 1; b < len(intervals); b++ {
+			var keyB = fmt.Sprintf("%d,%d", intervals[b][0], intervals[b][1])
+			if intervalsAllocated[b] || allocatedBMap[keyB] {
 				continue
 			}
 
-			if intervals[i][1] <= intervals[j][0] {
-				keysToAllocate = append(keysToAllocate, j)
-				allocatedJMap[keyJ] = true
+			if intervals[a][1] <= intervals[b][0] {
+				keysToAllocate = append(keysToAllocate, b)
+				allocatedBMap[keyB] = true
+				a = b
 			}
 
 		}

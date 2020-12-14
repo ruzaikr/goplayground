@@ -34,6 +34,11 @@ var testCases = []struct {
 		[][]int{{1, 5}, {8, 9}, {8, 9}},
 		2,
 	},
+	{
+		"Case 6",
+		[][]int{{6, 10}, {13, 14}, {12, 14}},
+		2,
+	},
 }
 
 func TestMinMeetingRooms(t *testing.T) {
