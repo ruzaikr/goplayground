@@ -1,9 +1,61 @@
+// This example demonstrates a priority queue built using the heap interface.
 package main
 
 import (
+	"container/heap"
 	"fmt"
 	"sort"
+
+	"github.com/davecgh/go-spew/spew"
 )
+
+// An Item is something we manage in a priority queue.
+type Item struct {
+	value    string // The value of the item; arbitrary.
+	priority int    // The priority of the item in the queue.
+	// The index is needed by update and is maintained by the heap.Interface methods.
+	index int // The index of the item in the heap.
+}
+
+// A PriorityQueue implements heap.Interface and holds Items.
+type PriorityQueue []*Item
+
+func (pq PriorityQueue) Len() int { return len(pq) }
+
+func (pq PriorityQueue) Less(i, j int) bool {
+	// We want Pop to give us the lowest, not highest, priority so we use lesser than here.
+	return pq[i].priority < pq[j].priority
+}
+
+func (pq PriorityQueue) Swap(i, j int) {
+	pq[i], pq[j] = pq[j], pq[i]
+	pq[i].index = i
+	pq[j].index = j
+}
+
+func (pq *PriorityQueue) Push(x interface{}) {
+	n := len(*pq)
+	item := x.(*Item)
+	item.index = n
+	*pq = append(*pq, item)
+}
+
+func (pq *PriorityQueue) Pop() interface{} {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	old[n-1] = nil  // avoid memory leak
+	item.index = -1 // for safety
+	*pq = old[0 : n-1]
+	return item
+}
+
+// update modifies the priority and value of an Item in the queue.
+func (pq *PriorityQueue) update(item *Item, value string, priority int) {
+	item.value = value
+	item.priority = priority
+	heap.Fix(pq, item.index)
+}
 
 func minMeetingRooms(intervals [][]int) int {
 	if len(intervals) < 1 {
@@ -21,46 +73,65 @@ func minMeetingRooms(intervals [][]int) int {
 		return false
 	})
 
-	var intervalsAllocated = make(map[int]bool)
-
-	var noOfMeetingRooms int
-
-	for i := 0; i < len(intervals); i++ {
-
-		var keysToAllocate []int
-		if intervalsAllocated[i] {
-			continue
-		}
-
-		keysToAllocate = append(keysToAllocate, i)
-
-		var a = i
-		var allocatedBMap = make(map[string]bool)
-		for b := a + 1; b < len(intervals); b++ {
-			var keyB = fmt.Sprintf("%d,%d", intervals[b][0], intervals[b][1])
-			if intervalsAllocated[b] || allocatedBMap[keyB] {
-				continue
-			}
-
-			if intervals[a][1] <= intervals[b][0] {
-				keysToAllocate = append(keysToAllocate, b)
-				allocatedBMap[keyB] = true
-				a = b
-			}
-
-		}
-
-		for i := 0; i < len(keysToAllocate); i++ {
-			intervalsAllocated[keysToAllocate[i]] = true
-		}
-
-		noOfMeetingRooms = noOfMeetingRooms + 1
-
+	var pq = make(PriorityQueue, 1)
+	pq[0] = &Item{
+		value:    "",
+		priority: 30,
+		index:    0,
 	}
 
-	return noOfMeetingRooms
+	heap.Init(&pq)
+
+	for i := 1; i < len(intervals); i++ {
+		if intervals[i][0] >= pq[0].priority {
+			pq.Pop()
+		}
+		var item = &Item{
+			value:    "",
+			priority: intervals[i][0],
+			index:    0,
+		}
+		pq.Push(item)
+	}
+
+	spew.Dump(pq)
+
+	return len(pq)
 }
 
+// This example creates a PriorityQueue with some items, adds and manipulates an item,
+// and then removes the items in priority order.
 func main() {
+	// Some items and their priorities.
+	items := map[string]int{
+		"banana": 3, "apple": 2, "pear": 4,
+	}
 
+	// Create a priority queue, put the items in it, and
+	// establish the priority queue (heap) invariants.
+	pq := make(PriorityQueue, len(items))
+	i := 0
+	for value, priority := range items {
+		pq[i] = &Item{
+			value:    value,
+			priority: priority,
+			index:    i,
+		}
+		i++
+	}
+	heap.Init(&pq)
+
+	// Insert a new item and then modify its priority.
+	item := &Item{
+		value:    "orange",
+		priority: 1,
+	}
+	heap.Push(&pq, item)
+	pq.update(item, item.value, 5)
+
+	// Take the items out; they arrive in decreasing priority order.
+	for pq.Len() > 0 {
+		item := heap.Pop(&pq).(*Item)
+		fmt.Printf("%.2d:%s ", item.priority, item.value)
+	}
 }
