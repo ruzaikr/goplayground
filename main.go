@@ -4,8 +4,6 @@ package main
 import (
 	"container/heap"
 	"sort"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 // An Item is something we manage in a priority queue.
@@ -48,12 +46,6 @@ func (pq *PriorityQueue) Pop() interface{} {
 	return item
 }
 
-// update modifies the priority of an Item in the queue.
-func (pq *PriorityQueue) update(item *Item, priority int) {
-	item.priority = priority
-	heap.Fix(pq, item.index)
-}
-
 func minMeetingRooms(intervals [][]int) int {
 	if len(intervals) < 1 {
 		return 0
@@ -80,15 +72,13 @@ func minMeetingRooms(intervals [][]int) int {
 
 	for i := 1; i < len(intervals); i++ {
 		if intervals[i][0] >= pq[0].priority {
-			pq.Pop()
+			heap.Pop(&pq)
 		}
 		var item = &Item{
 			priority: intervals[i][1],
 			index:    0,
 		}
-		pq.Push(item)
-
-		spew.Dump(i, pq)
+		heap.Push(&pq, item) // why not `pq.Push(item)`?
 	}
 
 	return len(pq)
@@ -99,3 +89,5 @@ func minMeetingRooms(intervals [][]int) int {
 func main() {
 
 }
+
+//
