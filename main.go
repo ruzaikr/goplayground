@@ -1,42 +1,54 @@
 package main
 
-/**
- * Definition for a binary tree node.
- * type TreeNode struct {
- *     Val int
- *     Left *TreeNode
- *     Right *TreeNode
- * }
- */
+import (
+	"fmt"
+)
 
-func preOrderTraversal(a *TreeNode, seq string) string {
-	if a == nil {
-		return seq
+// Coloring A Border
+// =================
+//
+
+func helper(grid [][]int, r int, c int, oldColor int, newColor int, visited map[string]bool) [][]int {
+	var key = fmt.Sprintf("%d,%d", r, c)
+	if _, exists := visited[key]; exists {
+		return grid
+	}
+	visited[key] = true // mark as visited
+
+	if r == -1 || r == len(grid) || c == -1 || c == len(grid[r]) { // check if r,c is out of bounds
+		return grid
 	}
 
-	seq = fmt.Sprintf("%s,-%d", seq, a.Val)
-
-	if a.Left != nil {
-		seq = preOrderTraversal(a.Left, seq)
-	}else {
-		seq = fmt.Sprintf("%s,%s", seq, "lnull")
+	if grid[r][c] != oldColor {
+		return grid
 	}
 
-	if a.Right != nil {
-		seq = preOrderTraversal(a.Right, seq)
-	}else {
-		seq = fmt.Sprintf("%s,%s", seq, "rnull")
+	var leftc = c - 1
+	var rightc = c + 1
+	var upr = r - 1
+	var downr = r + 1
+
+	if r == 0 || r == (len(grid)-1) || c == 0 || c == (len(grid[r])-1) ||
+		grid[r][leftc] != oldColor ||
+		grid[r][rightc] != oldColor ||
+		grid[upr][c] != oldColor ||
+		grid[downr][c] != oldColor {
+		grid[r][c] = newColor
 	}
 
-	return seq
+	helper(grid, r, leftc, oldColor, newColor, visited)
+	helper(grid, r, rightc, oldColor, newColor, visited)
+	helper(grid, upr, c, oldColor, newColor, visited)
+	helper(grid, downr, c, oldColor, newColor, visited)
+
+	return grid
 }
 
-func isSubtree(s *TreeNode, t *TreeNode) bool {
-	var seqS = preOrderTraversal(s, "")
-	fmt.Println("seqS:",seqS)
-	var seqT = preOrderTraversal(t, "")
-	fmt.Println("seqT:",seqT)
-	return strings.Contains(seqS, seqT)
+func colorBorder(grid [][]int, r0 int, c0 int, color int) [][]int {
+
+	// @todo: case where r0,c0 does not have any adjacent squares with the same color
+
+	return helper(grid, r0, c0, grid[r0][c0], color, make(map[string]bool))
 }
 
 func main() {
