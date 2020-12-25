@@ -61,5 +61,12 @@ func colorBorder(grid [][]int, r0 int, c0 int, color int) [][]int {
 }
 
 func main() {
-
+	var grid = [][]int{
+		{1, 1},
+		{1, 2},
+	}
+	var r0 = 0
+	var c0 = 0
+	var color = 3
+	fmt.Println("output: ", colorBorder(grid, r0, c0, color))
 }
