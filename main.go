@@ -1,8 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 type HitCounter struct {
+	mu   sync.Mutex
 	hits map[int]int
 }
 
@@ -16,12 +20,16 @@ func Constructor() HitCounter {
 /** Record a hit.
   @param timestamp - The current timestamp (in seconds granularity). */
 func (this *HitCounter) Hit(timestamp int) {
+	this.mu.Lock()
 	this.hits[timestamp] = this.hits[timestamp] + 1
+	this.mu.Unlock()
 }
 
 /** Return the number of hits in the past 5 minutes.
   @param timestamp - The current timestamp (in seconds granularity). */
 func (this *HitCounter) GetHits(timestamp int) int {
+	this.mu.Lock()
+	defer this.mu.Unlock()
 	var start = timestamp - 299
 	if start < 0 {
 		start = 1
@@ -46,7 +54,11 @@ func main() {
 	myHitCounter.Hit(2)
 	myHitCounter.Hit(3)
 	fmt.Println(myHitCounter.GetHits(4))
-	myHitCounter.Hit(300)
+
+	for i := 0; i < 999; i++ {
+		go myHitCounter.Hit(300)
+	}
+
 	fmt.Println(myHitCounter.GetHits(300))
 	fmt.Println(myHitCounter.GetHits(301))
 }
