@@ -19,8 +19,8 @@ func isSquare(x int, y int, sideLen int, matrix [][]byte) bool {
 	for i := 0; i < sideLen; i++ {
 		var innerY = y
 		for j := 0; j < sideLen; j++ {
-			fmt.Println("yelo", x, innerY, matrix[x][innerY])
-			if matrix[x][innerY] != 49 {
+			fmt.Println("yelo", x, innerY, matrix[innerY][x])
+			if matrix[innerY][x] != 49 {
 				return false
 			}
 			innerY = innerY + 1
@@ -60,10 +60,19 @@ func maximalSquare(matrix [][]byte) int {
 
 
 func main() {
-	var line1 = []byte("00")
+	// var line1 = []byte("0001")
+	// var line2 = []byte("1101")
+	// var line3 = []byte("1111")
+	// var line4 = []byte("0111")
+	// var line5 = []byte("0111")
+	// var input [][]byte
+	// input = append(input, line1, line2, line3, line4, line5)var line1 = []byte("0001")
+
+	var line1 = []byte("01")
+	var line2 = []byte("10")
 	var input [][]byte
-	input = append(input, line1)
+	input = append(input, line1, line2)
 	fmt.Println(maximalSquare(input))
 }
 
-// [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
+//[["0","0","0","1"],["1","1","0","1"],["1","1","1","1"],["0","1","1","1"],["0","1","1","1"]]
