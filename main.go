@@ -11,14 +11,21 @@ func getMin(a int, b int) int {
 	return b
 }
 
-func isSquare(i int, j int, sideLen int, matrix [][]byte) bool {
-	for k := i; k <= sideLen; k++ {
-		for l := j; l <= sideLen; l++ {
-			fmt.Println(matrix[k][l])
-			if matrix[k][l] != 49 {
+func isSquare(x int, y int, sideLen int, matrix [][]byte) bool {
+	fmt.Println("x, y: ", x, y, sideLen)
+	if sideLen == 1 {
+		return matrix[y][x] == 49
+	}
+	for i := 0; i < sideLen; i++ {
+		var innerY = y
+		for j := 0; j < sideLen; j++ {
+			fmt.Println("yelo", x, innerY, matrix[x][innerY])
+			if matrix[x][innerY] != 49 {
 				return false
 			}
+			innerY = innerY + 1
 		}
+		x = x + 1
 	}
 	return true
 }
@@ -33,13 +40,13 @@ func maximalSquare(matrix [][]byte) int {
 
 	var maxSquareSide = getMin(lenX, lenY)
 
-	fmt.Println("maxSquareSide = ", maxSquareSide)
 
 	outermost:
 	for maxSquareSide > 0 {
+		fmt.Println("maxSquareSide = ", maxSquareSide)
 		for y := 0; y < (lenY - maxSquareSide + 1); y++ {
 			for x := 0; x < (lenX - maxSquareSide + 1); x++ {
-				if isSquare(y, x, maxSquareSide, matrix) {
+				if isSquare(x, y, maxSquareSide, matrix) {
 					fmt.Println("y = ", y, " x = ", x)
 					break outermost
 				}
@@ -53,5 +60,10 @@ func maximalSquare(matrix [][]byte) int {
 
 
 func main() {
-	fmt.Println("Hello World")
+	var line1 = []byte("00")
+	var input [][]byte
+	input = append(input, line1)
+	fmt.Println(maximalSquare(input))
 }
+
+// [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
