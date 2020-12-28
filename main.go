@@ -12,14 +12,12 @@ func getMin(a int, b int) int {
 }
 
 func isSquare(x int, y int, sideLen int, matrix [][]byte) bool {
-	fmt.Println("x, y: ", x, y, sideLen)
 	if sideLen == 1 {
 		return matrix[y][x] == 49
 	}
 	for i := 0; i < sideLen; i++ {
 		var innerY = y
 		for j := 0; j < sideLen; j++ {
-			fmt.Println("yelo", x, innerY, matrix[innerY][x])
 			if matrix[innerY][x] != 49 {
 				return false
 			}
@@ -43,11 +41,9 @@ func maximalSquare(matrix [][]byte) int {
 
 	outermost:
 	for maxSquareSide > 0 {
-		fmt.Println("maxSquareSide = ", maxSquareSide)
 		for y := 0; y < (lenY - maxSquareSide + 1); y++ {
 			for x := 0; x < (lenX - maxSquareSide + 1); x++ {
 				if isSquare(x, y, maxSquareSide, matrix) {
-					fmt.Println("y = ", y, " x = ", x)
 					break outermost
 				}
 			}
