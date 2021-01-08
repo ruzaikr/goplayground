@@ -2,63 +2,60 @@ package main
 
 import (
 	"fmt"
-	"sync"
 )
 
-type HitCounter struct {
-	mu   sync.Mutex
-	hits map[int]int
-}
-
-/** Initialize your data structure here. */
-func Constructor() HitCounter {
-	return HitCounter{
-		hits: make(map[int]int),
-	}
-}
-
-/** Record a hit.
-  @param timestamp - The current timestamp (in seconds granularity). */
-func (this *HitCounter) Hit(timestamp int) {
-	this.mu.Lock()
-	this.hits[timestamp] = this.hits[timestamp] + 1
-	this.mu.Unlock()
-}
-
-/** Return the number of hits in the past 5 minutes.
-  @param timestamp - The current timestamp (in seconds granularity). */
-func (this *HitCounter) GetHits(timestamp int) int {
-	this.mu.Lock()
-	defer this.mu.Unlock()
-	var start = timestamp - 299
-	if start < 0 {
-		start = 1
-	}
-	var noOfHits int
-	for i := start; i <= timestamp; i++ {
-		noOfHits = noOfHits + this.hits[i]
-	}
-	return noOfHits
-}
-
-/**
- * Your HitCounter object will be instantiated and called as such:
- * obj := Constructor();
- * obj.Hit(timestamp);
- * param_2 := obj.GetHits(timestamp);
- */
-
-func main() {
-	var myHitCounter = Constructor()
-	myHitCounter.Hit(1)
-	myHitCounter.Hit(2)
-	myHitCounter.Hit(3)
-	fmt.Println(myHitCounter.GetHits(4))
-
-	for i := 0; i < 999; i++ {
-		go myHitCounter.Hit(300)
+func helper(r int, c int, matrix [][]int, visited1s map[string]bool, sizeOfRiver int) (map[string]bool, int) {
+	if r < 0 || c < 0 || r >= len(matrix) || c >= len(matrix[0]){
+		return visited1s, sizeOfRiver
 	}
 
-	fmt.Println(myHitCounter.GetHits(300))
-	fmt.Println(myHitCounter.GetHits(301))
+	var val = matrix[r][c]
+
+	if val == 0 {
+		return visited1s, sizeOfRiver
+	}
+
+	sizeOfRiver++ // val must be 1 if not 0
+	visited1s[fmt.Sprintf("%d,%d",r,c)] = true
+
+	var upr = r + 1
+	var downr = r - 1
+	var rightc = c + 1
+	var leftc = c - 1
+
+	visited1s, sizeOfRiver = helper(upr, c, matrix, visited1s, sizeOfRiver)
+	visited1s, sizeOfRiver = helper(downr, c, matrix, visited1s, sizeOfRiver)
+	visited1s, sizeOfRiver = helper(r, rightc, matrix, visited1s, sizeOfRiver)
+	visited1s, sizeOfRiver = helper(r, leftc, matrix, visited1s, sizeOfRiver)
+
+	return visited1s, sizeOfRiver
+
+}
+
+func RiverSizes(matrix [][]int) []int {
+	var noRows = len(matrix)
+	if noRows < 1 {
+		return []int{}
+	}
+	var noCols = len(matrix[0])
+
+	var visited1s = make(map[string]bool)
+	var riverSizes = make([]int, 0)
+
+	for r := 0; r < noRows; r++ {
+		for c := 0; c < noCols; c++ {
+
+			if matrix[r][c] == 0 || visited1s[fmt.Sprintf("%d,%d",r,c)] {
+				continue
+			}
+
+			// current element is a 1 that has not been processed
+			var sizeOfRiver int
+			visited1s, sizeOfRiver = helper(r, c, matrix, visited1s, sizeOfRiver)
+
+			riverSizes = append(riverSizes, sizeOfRiver)
+
+		}
+	}
+	return riverSizes
 }
