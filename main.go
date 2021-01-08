@@ -14,7 +14,7 @@ func helper(r int, c int, matrix [][]int, visited1s map[string]bool, sizeOfRiver
 
 	var val = matrix[r][c]
 
-	if val == 0 {
+	if val == 0 || visited1s[fmt.Sprintf("%d,%d",r,c)]{
 		return visited1s, sizeOfRiver
 	}
 
@@ -22,14 +22,14 @@ func helper(r int, c int, matrix [][]int, visited1s map[string]bool, sizeOfRiver
 	visited1s[fmt.Sprintf("%d,%d",r,c)] = true
 
 	var upr = r + 1
-	// var downr = r - 1
-	// var rightc = c + 1
-	// var leftc = c - 1
+	var downr = r - 1
+	var rightc = c + 1
+	var leftc = c - 1
 
 	visited1s, sizeOfRiver = helper(upr, c, matrix, visited1s, sizeOfRiver)
-	// visited1s, sizeOfRiver = helper(downr, c, matrix, visited1s, sizeOfRiver)
-	// visited1s, sizeOfRiver = helper(r, rightc, matrix, visited1s, sizeOfRiver)
-	// visited1s, sizeOfRiver = helper(r, leftc, matrix, visited1s, sizeOfRiver)
+	visited1s, sizeOfRiver = helper(downr, c, matrix, visited1s, sizeOfRiver)
+	visited1s, sizeOfRiver = helper(r, rightc, matrix, visited1s, sizeOfRiver)
+	visited1s, sizeOfRiver = helper(r, leftc, matrix, visited1s, sizeOfRiver)
 
 	return visited1s, sizeOfRiver
 
